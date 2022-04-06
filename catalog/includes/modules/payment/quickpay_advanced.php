@@ -10,6 +10,9 @@
  * author: Genuineq office@genuineq.com
  */
 
+ /** Module version. */
+define('MODULE_VERSION', '1.5.0');
+
 // 2.3.4BS Edge compatibility
 if (!defined('DIR_WS_CLASSES')) define('DIR_WS_CLASSES','includes/classes/');
 if (!defined('DIR_WS_ICONS')) define('DIR_WS_ICONS','images/icons/');
@@ -286,7 +289,7 @@ class quickpay_advanced {
                             //define payment icon width
                             if(strstr($icon, "_payment")){
                                 $w = 120;
-                                $h = 27;
+                                $h = 65;
                                 if(strstr($icon, "3d")){
                                     $w = 60;
                                 }
@@ -788,7 +791,7 @@ EOT;
 
             'shopsystem' => [
                 'name' => "OsCommerce",
-                'version' => "1.0.4"
+                'version' => MODULE_VERSION
             ]
         ];
 
@@ -1226,7 +1229,7 @@ EOT;
 
             // $qp_groupfee = (defined('MODULE_PAYMENT_QUICKPAY_GROUP' . $i . '_FEE')) ? constant('MODULE_PAYMENT_QUICKPAY_GROUP' . $i . '_FEE') : $qp_groupfee;
 
-            tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Group " . $i . " Payment Options ', 'MODULE_PAYMENT_QUICKPAY_ADVANCED_GROUP" . $i . "', '" . $qp_group . "', 'Comma seperated Quickpay payment options that are included in Group " . $i . ", maximum 255 chars (<a href=\'http://tech.quickpay.net/appendixes/payment-methods\' target=\'_blank\'><u>available options</u></a>)<br>Example: creditcard OR viabill OR dankort<br>', '6', '6', now())");
+            tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Group " . $i . " Payment Options ', 'MODULE_PAYMENT_QUICKPAY_ADVANCED_GROUP" . $i . "', '" . $qp_group . "', 'Comma seperated Quickpay payment options that are included in Group " . $i . ", maximum 255 chars (<a href=\'https://learn.quickpay.net/tech-talk/appendixes/payment-methods\' target=\'_blank\'><u>available options</u></a>)<br>Example: creditcard OR viabill OR dankort<br>', '6', '6', now())");
 
             tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, date_added) values ('Group " . $i . " Payment Text ', 'MODULE_PAYMENT_QUICKPAY_ADVANCED_GROUP" . $i . "_TEXT', '" . "" . "', 'Define text to be displayed for Group " . $i . " Payment Option. If this is not defined, the default text will be shown.<br>', '6', '6', now())");
 
@@ -1346,6 +1349,8 @@ EOT;
             case 'swish': return MODULE_PAYMENT_QUICKPAY_ADVANCED_SWISH_TEXT;
             case 'trustly': return MODULE_PAYMENT_QUICKPAY_ADVANCED_TRUSTLY_TEXT;
             case 'klarna': return MODULE_PAYMENT_QUICKPAY_ADVANCED_KLARNA_TEXT;
+            case 'apple-pay': return MODULE_PAYMENT_QUICKPAY_ADVANCED_APPLE_PAY_TEXT;
+            case 'google-pay': return MODULE_PAYMENT_QUICKPAY_ADVANCED_GOOGLE_PAY_TEXT;
 
             case 'maestro': return MODULE_PAYMENT_QUICKPAY_ADVANCED_MAESTRO_TEXT;
             case 'ideal': return MODULE_PAYMENT_QUICKPAY_ADVANCED_IDEAL_TEXT;
