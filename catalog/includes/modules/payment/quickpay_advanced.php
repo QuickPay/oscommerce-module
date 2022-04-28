@@ -11,7 +11,7 @@
  */
 
  /** Module version. */
-define('MODULE_VERSION', '1.5.0');
+define('MODULE_VERSION', '1.0.6');
 
 // 2.3.4BS Edge compatibility
 if (!defined('DIR_WS_CLASSES')) define('DIR_WS_CLASSES','includes/classes/');
@@ -171,6 +171,34 @@ class quickpay_advanced {
         return $js;
     }
 
+    /**
+     * @return bool
+     */
+    public function isSafariBrowser()
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $isSafari = false;
+        if (preg_match('/Safari/i', $userAgent)) {
+            $isSafari = (!preg_match('/Chrome/i', $userAgent));
+        }
+
+        return $isSafari;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isChromeBrowser()
+    {
+        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+        $isChrome = false;
+        if (preg_match('/Chrome/i', $userAgent)) {
+            $isChrome = true;
+        }
+
+        return $isChrome;
+    }
+
     /* Define payment method selector on checkout page */
     public function selection() {
         global $order, $currencies, $qp_card, $cardlock;
@@ -192,7 +220,7 @@ class quickpay_advanced {
 
         /** Parse all the configured MODULE_PAYMENT_QUICKPAY_ADVANCED_GROUP */
         $selection['fields'] = array();
-        $msg = '<table width="100%"><tr><td>';
+        $msg = '<table width="100%"><tr><td style="text-align:end;">';
         $optscount=0;
         for ($i = 1; $i <= $this->num_groups; $i++) {
             $options_text = '';
@@ -216,7 +244,7 @@ class quickpay_advanced {
                             }
 
                             /** Define payment icons width */
-                            $w = 35;
+                            $w = 'auto';
                             $h = 22;
                             $space = 5;
 
@@ -268,6 +296,23 @@ class quickpay_advanced {
                         $selectedopts = explode(",", $option);
                         $icon = "";
                         foreach($selectedopts as $option){
+
+                            /**
+                             * Check if method is apple-pay & browser is NOT Safari
+                             * SKIP this option if true
+                             */
+                            if ('apple-pay' == $option && !$this->isSafariBrowser()) {
+                                continue;
+                            }
+
+                            /**
+                             * Check if method is google-pay & browser is NOT Chrome
+                             * SKIP this option if true
+                             */
+                            if ('google-pay' == $option && !$this->isChromeBrowser()) {
+                                continue;
+                            }
+
                             $optscount++;
 
                             $icon = "";
@@ -288,13 +333,13 @@ class quickpay_advanced {
 
                             //define payment icon width
                             if(strstr($icon, "_payment")){
-                                $w = 120;
-                                $h = 65;
+                                $w = 'auto';
+                                $h = 45;
                                 if(strstr($icon, "3d")){
                                     $w = 60;
                                 }
                             }else{
-                                $w = 35;
+                                $w = 'auto';
                                 $h = 22;
                             }
 
@@ -304,7 +349,7 @@ class quickpay_advanced {
                             $options_text = '<table width="100%">
                                                 <tr>
                                                     <td>'.tep_image($icon,$this->get_payment_options_name($option),$w,$h,' style="position:relative;border:0px;float:left;margin:'.$space.'px;" ').'</td>
-                                                    <td style="height: 27px;white-space:nowrap;vertical-align:middle;" >';
+                                                    <td style="text-align:end; height: 27px;white-space:nowrap;vertical-align:middle;" >';
 
                             /** If there is an input in the text field for that payment option, that value will be shown to the user, otherwise, the default value will be used. */
                             if(defined('MODULE_PAYMENT_QUICKPAY_ADVANCED_GROUP'.$i.'_TEXT') && constant('MODULE_PAYMENT_QUICKPAY_ADVANCED_GROUP' . $i . '_TEXT') != ''){
@@ -394,6 +439,18 @@ class quickpay_advanced {
                         });
                       })
                     })
+                });
+
+                /** Adjust width of payment methods table. */
+                document.addEventListener("DOMContentLoaded", function(){
+                    var qpFirstRadio = document.querySelector("input[name=qp_card]");
+                    qpFirstRadio.parentNode.parentNode.parentNode.parentNode.style = "min-width:100%;";
+
+                    /** Align payment name to right. */
+                    var qpInputRadio = document.querySelectorAll("input[name=qp_card]");
+                    qpInputRadio.forEach(item => {
+                        item.parentNode.style = "text-align: end;";
+                    });
                 });
 
             //--></script>';
@@ -1418,8 +1475,8 @@ EOT;
 
 /** Display logos in the admin panel in view state */
 function show_logos($text) {
-    $w = 55;
-    $h = 'auto';
+    $w = 'auto';
+    $h = 22;
     $output = '';
 
     if ( !empty($text) ) {
@@ -1446,8 +1503,8 @@ function show_logos($text) {
 
 /** Display logos in the admin panel in edit state */
 function edit_logos($values, $key) {
-    $w = 55;
-    $h = 'auto';
+    $w = 'auto';
+    $h = 22;
 
     /** Scan images directory for logos */
     $files_array = array();

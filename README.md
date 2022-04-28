@@ -2,7 +2,7 @@
 Quickpay payment module for osCommerce
 Modular package.
 
-Version 1.0.5 - 31.03.2022
+Version 1.0.6 - 27.04.2022
 
 Compatibility:
 Quickpay API v10 with
@@ -21,6 +21,10 @@ Support thread on osCommerce forums:
 https://forums.oscommerce.com/topic/412146-quickpay-payment-module-for-23/
 
 Changelog
+### 1.0.6
+- Added check for Safari/Chrome browser
+- Fix module version
+- Fix payment methods table width
 ### 1.0.5
 - Added Apple Pay & Google pay payment methods
 - fix payment (_payment) logos height
